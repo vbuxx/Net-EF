@@ -1,6 +1,7 @@
 ﻿using DTS_EntityFrameworks.Context;
 using DTS_EntityFrameworks.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,8 @@ namespace DTS_EntityFrameworks.Controllers
     public class DepartmentController : Controller
     {
         MyContext myContext;
+
+        
 
         public DepartmentController(MyContext myContext)
         {
@@ -42,9 +45,14 @@ namespace DTS_EntityFrameworks.Controllers
         //GET
         public IActionResult Create()
         {
-            //var data = myContext.Divisions.ToList();
-            //ViewBag.Divisions = data;
-            return View();
+            SelectFromList createNew = new SelectFromList();
+            createNew.Department = new Department();
+            List<SelectListItem> divisions = myContext.Divisions
+                .OrderBy(n => n.Name)
+                .Select(n => new SelectListItem { Value = n.Id.ToString(), Text = n.Name}).ToList();
+
+            createNew.Divisions = divisions;
+            return View(createNew);
         }
 
         //POST
@@ -71,13 +79,20 @@ namespace DTS_EntityFrameworks.Controllers
         //GET
         public IActionResult Edit(int Id)
         {
-            var data = myContext.Departments
-               .Where(x => x.Id == Id)
-               .Include(x => x.Division);
-            return View(data);
+
+            SelectFromList editItem = new SelectFromList();
+            editItem.Department = myContext.Departments.Where(x=>x.Id == Id).FirstOrDefault();
+            List<SelectListItem> divisions = myContext.Divisions
+                .OrderBy(n => n.Name)
+                .Select(n => new SelectListItem { Value = n.Id.ToString(), Text = n.Name }).ToList();
+
+            editItem.Divisions = divisions;
+            return View(editItem);
         }
-    
+
         //POST
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Edit(Department department)
         {
             if (ModelState.IsValid)
@@ -101,10 +116,12 @@ namespace DTS_EntityFrameworks.Controllers
         {
             var data = myContext.Departments
                .Where(x => x.Id == Id)
-               .Include(x => x.Division);
+               .Include(x => x.Division).FirstOrDefault();
             return View(data);
         }
         //POST
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Delete(Department department)
         {
             if (ModelState.IsValid)
