@@ -9,7 +9,7 @@ namespace DTS_EntityFrameworks.Context
 {
     public class MyContext : DbContext
     {
-        public MyContext(DbContextOptions<DbContext> dbContext) : base(dbContext)
+        public MyContext(DbContextOptions<MyContext> dbContext) : base(dbContext)
         {
 
         }
