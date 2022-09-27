@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using DTS_EntityFrameworks.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DTS_EntityFrameworks.Models
+namespace DTS_EntityFrameworks.ViewModels
 {
     public class SelectFromList
     {
